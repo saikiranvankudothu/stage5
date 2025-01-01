@@ -17,6 +17,9 @@ import Profile from '../components/Profile';
 import LiveMatchPage from '../components/LiveMatch/LiveMatchPage';
 import TeamsPage from '../components/Teams/TeamsPage';
 import TeamPage from '../components/Teams/TeamPage';
+import SchedulePage from '../components/Schedule/SchedulePage';
+import StatsPage from '../components/Stats/StatsPage';
+import MatchStatsPage from '../components/Stats/MatchDetails/MatchStatsPage';
 
 export default function AppRoutes() {
   return (
@@ -35,6 +38,9 @@ export default function AppRoutes() {
         <Route path={PATHS.LIVE_MATCH} element={<LiveMatchPage />} />
         <Route path={PATHS.TEAMS} element={<TeamsPage />} />
         <Route path={`${PATHS.TEAMS}/:teamId`} element={<TeamPage />} />
+        <Route path={PATHS.SCHEDULE} element={<SchedulePage />} />
+        <Route path={PATHS.STATS} element={<StatsPage />} />
+        <Route path={`${PATHS.STATS}/matches/:matchId`} element={MatchStatsPage} />
       </Route>
 
       {/* Redirect root to dashboard or login based on auth status */}
