@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const scoreData = [
   { over: 5, runs: 32 },
@@ -13,6 +13,8 @@ const scoreData = [
 ];
 
 export default function ScoreGraph() {
+  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+
   const maxRuns = Math.max(...scoreData.map(d => d.runs));
   const maxOvers = Math.max(...scoreData.map(d => d.over));
 
@@ -63,7 +65,40 @@ export default function ScoreGraph() {
               fill="url(#scoreGradient)"
               className="transition-all duration-300"
             />
+            {scoreData.map((d, i) => (
+              <circle
+                key={i}
+                cx={`${(d.over * 100) / maxOvers}%`}
+                cy={`${100 - (d.runs * 100) / maxRuns}%`}
+                r="4"
+                fill={hoveredPoint === i ? 'rgb(79, 70, 229)' : 'white'}
+                stroke="rgb(79, 70, 229)"
+                strokeWidth="2"
+                className="transition-all duration-300 cursor-pointer"
+                onMouseEnter={() => setHoveredPoint(i)}
+                onMouseLeave={() => setHoveredPoint(null)}
+              />
+            ))}
           </svg>
+
+          {/* Tooltip */}
+          {hoveredPoint !== null && (
+            <div
+              className="absolute bg-white dark:bg-gray-800 p-2 rounded shadow-md text-sm"
+              style={{
+                left: `${(scoreData[hoveredPoint].over * 100) / maxOvers}%`,
+                top: `${100 - (scoreData[hoveredPoint].runs * 100) / maxRuns}%`,
+                transform: 'translate(-50%, -100%)',
+              }}
+            >
+              <div className="font-bold text-gray-900 dark:text-white">
+                {scoreData[hoveredPoint].runs} runs
+              </div>
+              <div className="text-gray-500 dark:text-gray-400">
+                {scoreData[hoveredPoint].over} overs
+              </div>
+            </div>
+          )}
 
           {/* X-axis labels */}
           <div className="absolute bottom-0 w-full flex justify-between text-sm text-gray-500 dark:text-gray-400 -mb-6">
@@ -76,3 +111,4 @@ export default function ScoreGraph() {
     </div>
   );
 }
+

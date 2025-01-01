@@ -1,17 +1,18 @@
-import React from 'react';
-import { Search, Menu, Moon, Sun } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Menu, Moon, Sun, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <img src= "/logo.svg" alt="Cricket Tournament" className="h-8 w-auto" />
+            <img src="/logo.svg" alt="Cricket Tournament" className="h-8 w-auto" />
             <nav className="hidden md:flex ml-10 space-x-8">
               <a href="#" className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Matches</a>
               <a href="#" className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400">Teams</a>
@@ -21,7 +22,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <div className="hidden md:block">
+            <div className={`${isSearchOpen ? 'block' : 'hidden'} md:block`}>
               <div className="relative">
                 <input
                   type="text"
@@ -31,6 +32,17 @@ export default function Header() {
                 <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               </div>
             </div>
+
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              {isSearchOpen ? (
+                <X className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+              ) : (
+                <Search className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+              )}
+            </button>
 
             <button
               onClick={toggleTheme}
@@ -64,3 +76,4 @@ export default function Header() {
     </header>
   );
 }
+

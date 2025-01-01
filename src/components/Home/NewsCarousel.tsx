@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const news = [
@@ -28,6 +28,14 @@ export default function NewsCarousel() {
   const prevSlide = () => {
     setActiveSlide((prev) => (prev - 1 + news.length) % news.length);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
@@ -67,3 +75,4 @@ export default function NewsCarousel() {
     </div>
   );
 }
+

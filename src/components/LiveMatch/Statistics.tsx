@@ -1,27 +1,91 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Search, X } from 'lucide-react';
 
 interface StatisticsProps {
   compact?: boolean;
 }
 
 const battingStats = [
-  { name: 'Virat Kohli', runs: 82, balls: 74, strikeRate: 110.81 },
-  { name: 'KL Rahul', runs: 56, balls: 43, strikeRate: 130.23 }
+  { name: 'Virat Kohli', runs: 82, balls: 74, fours: 6, sixes: 2, strikeRate: 110.81 },
+  { name: 'KL Rahul', runs: 56, balls: 43, fours: 4, sixes: 3, strikeRate: 130.23 },
+  { name: 'Rohit Sharma', runs: 34, balls: 28, fours: 3, sixes: 1, strikeRate: 121.43 },
+  { name: 'Shreyas Iyer', runs: 28, balls: 24, fours: 2, sixes: 1, strikeRate: 116.67 },
 ];
 
 const bowlingStats = [
   { name: 'Mitchell Starc', overs: '9.3', maidens: 1, runs: 48, wickets: 2, economy: 5.05 },
-  { name: 'Pat Cummins', overs: '10.0', maidens: 0, runs: 52, wickets: 1, economy: 5.20 }
+  { name: 'Pat Cummins', overs: '10.0', maidens: 0, runs: 52, wickets: 1, economy: 5.20 },
+  { name: 'Josh Hazlewood', overs: '8.0', maidens: 1, runs: 39, wickets: 0, economy: 4.88 },
+  { name: 'Adam Zampa', overs: '10.0', maidens: 0, runs: 58, wickets: 1, economy: 5.80 },
 ];
 
 export default function Statistics({ compact = false }: StatisticsProps) {
+  const [activeTab, setActiveTab] = useState('batting');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredBattingStats = battingStats.filter(player =>
+    player.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredBowlingStats = bowlingStats.filter(player =>
+    player.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Batting
-        </h3>
-        <div className="overflow-x-auto">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          {compact ? 'Quick Stats' : 'Match Statistics'}
+        </h2>
+        {!compact && (
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setActiveTab('batting')}
+              className={`px-4 py-2 text-sm font-medium rounded-md ${
+                activeTab === 'batting'
+                  ? 'bg-indigo-600 text-white'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              Batting
+            </button>
+            <button
+              onClick={() => setActiveTab('bowling')}
+              className={`px-4 py-2 text-sm font-medium rounded-md ${
+                activeTab === 'bowling'
+                  ? 'bg-indigo-600 text-white'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              Bowling
+            </button>
+          </div>
+        )}
+      </div>
+
+      {!compact && (
+        <div className="relative mb-4">
+          <input
+            type="text"
+            placeholder="Search player..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="overflow-x-auto">
+        {activeTab === 'batting' && (
           <table className="min-w-full">
             <thead>
               <tr className="text-sm text-gray-500 dark:text-gray-400">
@@ -34,7 +98,7 @@ export default function Statistics({ compact = false }: StatisticsProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {battingStats.map((batter) => (
+              {(compact ? battingStats.slice(0, 2) : filteredBattingStats).map((batter) => (
                 <tr key={batter.name} className="text-sm">
                   <td className="py-3 text-gray-900 dark:text-white font-medium">
                     {batter.name}
@@ -47,8 +111,8 @@ export default function Statistics({ compact = false }: StatisticsProps) {
                   </td>
                   {!compact && (
                     <>
-                      <td className="py-3 text-center text-gray-500 dark:text-gray-400">6</td>
-                      <td className="py-3 text-center text-gray-500 dark:text-gray-400">2</td>
+                      <td className="py-3 text-center text-gray-500 dark:text-gray-400">{batter.fours}</td>
+                      <td className="py-3 text-center text-gray-500 dark:text-gray-400">{batter.sixes}</td>
                     </>
                   )}
                   <td className="py-3 text-right text-gray-500 dark:text-gray-400">
@@ -58,14 +122,9 @@ export default function Statistics({ compact = false }: StatisticsProps) {
               ))}
             </tbody>
           </table>
-        </div>
-      </div>
+        )}
 
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Bowling
-        </h3>
-        <div className="overflow-x-auto">
+        {activeTab === 'bowling' && (
           <table className="min-w-full">
             <thead>
               <tr className="text-sm text-gray-500 dark:text-gray-400">
@@ -78,7 +137,7 @@ export default function Statistics({ compact = false }: StatisticsProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {bowlingStats.map((bowler) => (
+              {(compact ? bowlingStats.slice(0, 2) : filteredBowlingStats).map((bowler) => (
                 <tr key={bowler.name} className="text-sm">
                   <td className="py-3 text-gray-900 dark:text-white font-medium">
                     {bowler.name}
@@ -104,8 +163,9 @@ export default function Statistics({ compact = false }: StatisticsProps) {
               ))}
             </tbody>
           </table>
-        </div>
+        )}
       </div>
     </div>
   );
 }
+

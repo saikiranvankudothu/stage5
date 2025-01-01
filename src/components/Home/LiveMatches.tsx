@@ -1,8 +1,8 @@
-import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ExternalLink, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const matches = [
+const initialMatches = [
   {
     id: 1,
     team1: { name: 'India', score: '285/4', overs: '42.3' },
@@ -20,6 +20,33 @@ const matches = [
 ];
 
 export default function LiveMatches() {
+  const [matches, setMatches] = useState(initialMatches);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMatches(prevMatches =>
+        prevMatches.map(match => ({
+          ...match,
+          team1: {
+            ...match.team1,
+            score: updateScore(match.team1.score),
+          },
+          team2: {
+            ...match.team2,
+            score: updateScore(match.team2.score),
+          },
+        }))
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  function updateScore(score) {
+    const [runs, wickets] = score.split('/');
+    return `${parseInt(runs) + Math.floor(Math.random() * 3)}/${wickets}`;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {matches.map(match => (
@@ -31,6 +58,7 @@ export default function LiveMatches() {
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-400">
+                <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
                 LIVE
               </span>
               <ExternalLink className="h-5 w-5 text-gray-400" />
@@ -61,3 +89,4 @@ export default function LiveMatches() {
     </div>
   );
 }
+
