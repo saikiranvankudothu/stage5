@@ -1,45 +1,43 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, List } from 'lucide-react';
-import MatchCard from './MatchCard';
-import { matchSchedule } from './scheduleData';
+import ScheduleFilters from './ScheduleFilters';
+import ScheduleList from './ScheduleList';
+import { ScheduleFilters as ScheduleFiltersType } from './types';
+import { scheduleData } from './scheduleData';
+
+const initialFilters: ScheduleFiltersType = {
+  tournament: '',
+  team: '',
+  status: '',
+  dateRange: {
+    start: '',
+    end: '',
+  },
+};
 
 export default function SchedulePage() {
-  const [viewType, setViewType] = useState<'calendar' | 'list'>('list');
+  const [filters, setFilters] = useState<ScheduleFiltersType>(initialFilters);
+
+  const filteredMatches = scheduleData.filter((match) => {
+    if (filters.tournament && match.tournament !== filters.tournament) return false;
+    if (filters.status && match.status !== filters.status) return false;
+    if (filters.dateRange.start && new Date(match.date) < new Date(filters.dateRange.start))
+      return false;
+    if (filters.dateRange.end && new Date(match.date) > new Date(filters.dateRange.end))
+      return false;
+    return true;
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Match Schedule</h1>
-        
-        <div className="flex gap-2">
-          <button
-            onClick={() => setViewType('list')}
-            className={`p-2 rounded-lg ${
-              viewType === 'list'
-                ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
-                : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
-            }`}
-          >
-            <List className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => setViewType('calendar')}
-            className={`p-2 rounded-lg ${
-              viewType === 'calendar'
-                ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
-                : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
-            }`}
-          >
-            <CalendarIcon className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {matchSchedule.map((match) => (
-          <MatchCard key={match.id} {...match} />
-        ))}
-      </div>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Match Schedule</h1>
+      
+      <ScheduleFilters
+        filters={filters}
+        onFilterChange={setFilters}
+        onReset={() => setFilters(initialFilters)}
+      />
+      
+      <ScheduleList matches={filteredMatches} />
     </div>
   );
 }

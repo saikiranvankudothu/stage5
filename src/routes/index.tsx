@@ -15,6 +15,8 @@ import ForgotPassword from '../components/ForgotPassword';
 import Home from '../components/Home';
 import Profile from '../components/Profile';
 import LiveMatchPage from '../components/LiveMatch/LiveMatchPage';
+import TeamsPage from '../components/Teams/TeamsPage';
+import TeamPage from '../components/Teams/TeamPage';
 
 export default function AppRoutes() {
   return (
@@ -31,6 +33,8 @@ export default function AppRoutes() {
         <Route path={PATHS.DASHBOARD} element={<Home />} />
         <Route path={PATHS.PROFILE} element={<Profile />} />
         <Route path={PATHS.LIVE_MATCH} element={<LiveMatchPage />} />
+        <Route path={PATHS.TEAMS} element={<TeamsPage />} />
+        <Route path={`${PATHS.TEAMS}/:teamId`} element={<TeamPage />} />
       </Route>
 
       {/* Redirect root to dashboard or login based on auth status */}

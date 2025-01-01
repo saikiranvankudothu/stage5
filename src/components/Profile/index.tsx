@@ -20,19 +20,22 @@ const mockUser = {
 
 const mockPosts = [
   {
-    id: '1',
+    id: 'post_1',
+    type: 'post',
     image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80',
     likes: 234,
     comments: 12,
   },
   {
-    id: '2',
+    id: 'post_2',
+    type: 'post',
     image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80',
     likes: 187,
     comments: 8,
   },
   {
-    id: '3',
+    id: 'post_3',
+    type: 'post',
     image: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?auto=format&fit=crop&q=80',
     likes: 342,
     comments: 15,
@@ -40,9 +43,9 @@ const mockPosts = [
 ];
 
 const mockArticles = [
-  { id: '1', title: 'The Evolution of Cricket Bats', likes: 156, comments: 23 },
-  { id: '2', title: 'Top 10 Cricket Stadiums Around the World', likes: 203, comments: 31 },
-  { id: '3', title: 'Mastering the Art of Spin Bowling', likes: 178, comments: 19 },
+  { id: 'article_1', type: 'article', title: 'The Evolution of Cricket Bats', likes: 156, comments: 23 },
+  { id: 'article_2', type: 'article', title: 'Top 10 Cricket Stadiums Around the World', likes: 203, comments: 31 },
+  { id: 'article_3', type: 'article', title: 'Mastering the Art of Spin Bowling', likes: 178, comments: 19 },
 ];
 
 export default function Profile() {
@@ -62,6 +65,7 @@ export default function Profile() {
           setContent(mockArticles);
           break;
         case 'liked':
+          // Ensure each item has a unique ID when combining posts and articles
           setContent([...mockPosts, ...mockArticles]);
           break;
         case 'stats':
@@ -115,4 +119,3 @@ export default function Profile() {
     </div>
   );
 }
-

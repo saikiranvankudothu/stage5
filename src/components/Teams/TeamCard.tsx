@@ -1,21 +1,16 @@
 import React from 'react';
 import { Trophy, Users } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Team } from './types';
 
-interface TeamCardProps {
-  id: string;
-  name: string;
-  logo: string;
-  rank: number;
-  titles: number;
-  players: number;
+interface TeamCardProps extends Team {
+  onClick: () => void;
 }
 
-export default function TeamCard({ id, name, logo, rank, titles, players }: TeamCardProps) {
+export default function TeamCard({ name, logo, rank, titles, players, onClick }: TeamCardProps) {
   return (
-    <Link 
-      to={`/teams/${id}`}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all"
+    <div 
+      onClick={onClick}
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-200 dark:border-gray-700"
     >
       <div className="p-6">
         <div className="flex items-center gap-4">
@@ -35,10 +30,10 @@ export default function TeamCard({ id, name, logo, rank, titles, players }: Team
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-indigo-500" />
-            <span className="text-sm text-gray-600 dark:text-gray-300">{players} Players</span>
+            <span className="text-sm text-gray-600 dark:text-gray-300">{players.length} Players</span>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
